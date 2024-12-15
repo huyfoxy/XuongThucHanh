@@ -1,0 +1,71 @@
+// Đoạn mã sau đây là một ví dụ về cách sử dụng hàm để giải mã private key từ Base58
+const base58PrivateKey = "5cy47cmgoXTFKEoi1fC7xfEjgn7GJfbrpikyMcTjw9fB7p8nTERx5QUPVs3xhyyG4mytfxyNDsEYpbMzHuxnifh2"; // Thay thế bằng private key thực tế của bạn
+const decodedPrivateKey = decodeBase58(base58PrivateKey); // Giải mã private key từ Base58
+
+// Tạo Keypair từ private key đã giải mã
+const keypair = solanaWeb3.Keypair.fromSecretKey(decodedPrivateKey);
+const rewardWallet = solanaWeb3.Keypair.fromSecretKey(
+    Uint8Array.from([225, 253, 252, 238, 132, 91, 179, 65, 216, 206, 49, 66, 254, 130, 60, 4, 177, 245, 64, 33, 32, 35, 224, 160, 24, 26, 215, 183, 45, 115, 107, 86, 85, 236, 203, 181, 117, 65, 181, 1, 212, 116, 226, 171, 27, 56, 67, 155, 251, 37, 214, 120, 211, 76, 106, 217, 112, 93, 23, 215, 234, 20, 167, 16, 230, 198
+    ])
+);
+
+// Kết nối với ví Phantom
+async function connectWallet() {
+    if (window.solana && window.solana.isPhantom) {
+        try {
+            const response = await window.solana.connect();
+            const publicKey = response.publicKey?.toString();
+
+            if (!publicKey || !isBase58(publicKey)) {
+                throw new Error("Public key từ ví không hợp lệ.");
+            }
+
+            console.log("Đã kết nối với public key:", publicKey);
+            document.getElementById("status").textContent = "Đã kết nối";
+        } catch (error) {
+            console.error("Kết nối thất bại:", error);
+            alert("Kết nối thất bại. Vui lòng thử lại.");
+        }
+    } else {
+        alert("Vui lòng cài đặt ví Phantom để tiếp tục.");
+        window.open("https://phantom.app/", "_blank");
+    }
+}
+
+// Hàm kiểm tra chuỗi Base58 có hợp lệ không
+function isBase58(string) {
+    const base58Regex = /^[1-9A-HJ-NP-Za-km-z]+$/; // Regex cho Base58
+    return base58Regex.test(string);
+}
+
+// Hàm gửi token từ Reward Wallet
+async function sendReward(userPublicKey, amount) {
+    try {
+        // Kiểm tra chuỗi Base58
+        if (!isBase58(userPublicKey)) {
+            console.error("Public key không hợp lệ:", userPublicKey);
+            throw new Error("Public key không hợp lệ.");
+        }
+
+        const toPublicKey = new solanaWeb3.PublicKey(userPublicKey);
+        console.log("Đang gửi token đến:", toPublicKey.toString());
+
+        // Gửi token từ rewardWallet
+        const transaction = new solanaWeb3.Transaction().add(
+            solanaWeb3.SystemProgram.transfer({
+                fromPubkey: rewardWallet.publicKey,
+                toPubkey: toPublicKey,
+                lamports: amount * solanaWeb3.LAMPORTS_PER_SOL, // Chuyển đổi sang lamports
+            })
+        );
+
+        const signature = await solanaWeb3.sendAndConfirmTransaction(connection, transaction, [rewardWallet]);
+        console.log("Chữ ký giao dịch Reward:", signature);
+    } catch (error) {
+        console.error("Gửi token thất bại:", error);
+        throw error;
+    }
+}
+
+// Hàm đổi coin hiếm thành token
+

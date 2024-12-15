@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('/assets/background/wallhaven-p8dqde.jpg') no-repeat center center fixed;
+    background-size: cover; /* Phóng to ảnh để bao phủ toàn bộ màn hình */
+}
+
+#phaser-example {
+    display: block;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 20px;
+    background-color: #ff6347;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e74c3c;
+}
+
+.text {
+    font-size: 32px;
+    color: #ffffff;
+    font-style: bold;
+}
+
+.quit-button, .hint-button {
+    position: absolute;
+    top: 20px;
+}
+
+.quit-button {
+    right: 20px;
+}
+
+.hint-button {
+    right: 100px;
+}
+
+.score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 32px;
+    color: #ffffff;
+    font-weight: bold;
+}

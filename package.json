@@ -1,0 +1,17 @@
+{
+  "name": "gamelathinh",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@solana/web3.js": "^1.95.8",
+    "bs58": "^6.0.0",
+    "phaser": "^3.87.0"
+  }
+}
